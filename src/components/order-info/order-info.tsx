@@ -1,25 +1,47 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useSelector } from '../../services/store';
+import {
+  fetchOrderByNumber,
+  selectModalOrder,
+  selectOrderLoading
+} from '../../services/slices/orderSlice';
+import {
+  fetchIngredients,
+  selectIngredients,
+  selectIngredientsLoading
+} from '../../services/slices/ingredientsSlice';
+import { useLocation, useParams } from 'react-router-dom';
+import { useDispatch } from '../../services/store';
+import styles from '../app/app.module.css';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const { number } = useParams<{ number: string }>();
+  const dispatch = useDispatch();
+  const orderData = useSelector(selectModalOrder);
+  const loading = useSelector(selectOrderLoading);
+  const ingredients = useSelector(selectIngredients);
+  const ingredientsLoading = useSelector(selectIngredientsLoading);
+  const location = useLocation();
 
-  const ingredients: TIngredient[] = [];
+  const isModal = !!location.state?.background;
 
-  /* Готовим данные для отображения */
+  useEffect(() => {
+    if (ingredients.length === 0) {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, ingredients.length]);
+
+  useEffect(() => {
+    if (number) {
+      dispatch(fetchOrderByNumber(number));
+    }
+  }, [dispatch, number]);
+
   const orderInfo = useMemo(() => {
-    if (!orderData || !ingredients.length) return null;
+    if (!orderData) return null;
 
     const date = new Date(orderData.createdAt);
 
@@ -59,8 +81,24 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
+  if (loading || ingredientsLoading) {
+    return <Preloader />;
+  }
+
+  if (!orderData) {
+    return <Preloader />;
+  }
+
   if (!orderInfo) {
     return <Preloader />;
+  }
+
+  if (!isModal) {
+    return (
+      <div className={styles.detailPageWrap}>
+        <OrderInfoUI orderInfo={orderInfo} />
+      </div>
+    );
   }
 
   return <OrderInfoUI orderInfo={orderInfo} />;

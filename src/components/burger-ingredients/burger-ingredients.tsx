@@ -1,14 +1,46 @@
-import { useState, useRef, useEffect, FC } from 'react';
+import { useState, useRef, useEffect, FC, useMemo, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { useSelector, useDispatch } from '../../services/store';
 
-import { TTabMode } from '@utils-types';
+import { TTabMode, TIngredient } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { RootState } from 'src/services/store';
+import {
+  addBun,
+  addIngredient
+} from '../../services/slices/burgerConstructorSlice';
+import { selectIngredients } from '../../services/slices/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const buns = [];
-  const mains = [];
-  const sauces = [];
+  const dispatch = useDispatch();
+
+  const ingredients = useSelector(selectIngredients);
+
+  const handleIngredientClick = useCallback(
+    (ingredient: TIngredient) => {
+      if (ingredient.type === 'bun') {
+        dispatch(addBun(ingredient));
+      } else {
+        dispatch(addIngredient(ingredient));
+      }
+    },
+    [dispatch]
+  );
+
+  const buns = useMemo(
+    () => ingredients.filter((item: { type: string }) => item.type === 'bun'),
+    [ingredients]
+  );
+
+  const mains = useMemo(
+    () => ingredients.filter((item: { type: string }) => item.type === 'main'),
+    [ingredients]
+  );
+
+  const sauces = useMemo(
+    () => ingredients.filter((item: { type: string }) => item.type === 'sauce'),
+    [ingredients]
+  );
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -47,8 +79,6 @@ export const BurgerIngredients: FC = () => {
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  return null;
-
   return (
     <BurgerIngredientsUI
       currentTab={currentTab}
@@ -62,6 +92,7 @@ export const BurgerIngredients: FC = () => {
       mainsRef={mainsRef}
       saucesRef={saucesRef}
       onTabClick={onTabClick}
+      onIngredientClick={handleIngredientClick}
     />
   );
 };
