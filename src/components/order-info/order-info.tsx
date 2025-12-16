@@ -9,7 +9,6 @@ import {
   selectOrderLoading
 } from '../../services/slices/orderSlice';
 import {
-  fetchIngredients,
   selectIngredients,
   selectIngredientsLoading
 } from '../../services/slices/ingredientsSlice';
@@ -27,12 +26,6 @@ export const OrderInfo: FC = () => {
   const location = useLocation();
 
   const isModal = !!location.state?.background;
-
-  useEffect(() => {
-    if (ingredients.length === 0) {
-      dispatch(fetchIngredients());
-    }
-  }, [dispatch, ingredients.length]);
 
   useEffect(() => {
     if (number) {

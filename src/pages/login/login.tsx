@@ -9,17 +9,18 @@ export const Login: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuth = useSelector(selectIsAuthenticated);
+
+  useEffect(() => {
+    if (isAuth) {
+      const origin = location.state?.from?.pathname || '/profile';
+      navigate(origin, { replace: true });
+    }
+  }, [isAuth, location, navigate]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();

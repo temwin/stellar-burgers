@@ -9,8 +9,10 @@ export const UnauthenticatedRoute = ({
   children: ReactElement;
 }) => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
+
   if (isAuthenticated) {
     return <Navigate to='/' replace />;
   }
+
   return children;
 };
