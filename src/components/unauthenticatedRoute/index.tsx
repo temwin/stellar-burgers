@@ -41,5 +41,11 @@ export const UnauthenticatedRoute = ({
     const from = location.state?.from || { pathname: '/' };
     return <Navigate to={from} replace />;
   }
+
+  if (isAuthenticated) {
+    const from = location.state?.from || { pathname: '/' };
+    return <Navigate to={from} replace />;
+  }
+
   return children;
 };

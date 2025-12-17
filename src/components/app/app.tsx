@@ -28,6 +28,7 @@ import { ProtectedRoute } from '../protected-route';
 import { useEffect, useState } from 'react';
 import { getCookie } from '../../utils/cookie';
 import { getUser } from '../../services/slices/authSlice';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 // import { Store } from '@reduxjs/toolkit';
 
 const AppContent = () => {
@@ -37,6 +38,7 @@ const AppContent = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(fetchIngredients());
     const accessToken = getCookie('accessToken');
     if (accessToken) {
       dispatch(getUser());
@@ -138,9 +140,11 @@ const AppContent = () => {
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal title='Детали заказа' onClose={handleModalClose}>
-                <OrderInfo />
-              </Modal>
+              <ProtectedRoute>
+                <Modal title='Детали заказа' onClose={handleModalClose}>
+                  <OrderInfo />
+                </Modal>
+              </ProtectedRoute>
             }
           />
         </Routes>
