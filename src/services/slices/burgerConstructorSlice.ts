@@ -24,6 +24,7 @@ const initialState: BurgerConstructorState = {
   error: null
 };
 
+// Асинхронный экшен для создания заказа
 export const createOrder = createAsyncThunk(
   'burgerConstructor/createOrder',
   async (ingredientIds: string[]) => {
@@ -36,16 +37,12 @@ export const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
-    addBun: (state, action: PayloadAction<TIngredient>) => {
-      state.bun = action.payload;
+    addIngredient: (state, action: PayloadAction<TConstructorIngredient>) => {
+      state.ingredients.push(action.payload);
     },
 
-    addIngredient: (state, action: PayloadAction<TIngredient>) => {
-      const constructorIngredient: TConstructorIngredient = {
-        ...action.payload,
-        id: nanoid()
-      };
-      state.ingredients.push(constructorIngredient);
+    addBun: (state, action: PayloadAction<TIngredient>) => {
+      state.bun = action.payload;
     },
 
     removeIngredient: (state, action: PayloadAction<number>) => {
@@ -70,23 +67,31 @@ export const burgerConstructorSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
       .addCase(createOrder.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
         state.order = action.payload;
+        state.bun = null;
+        state.ingredients = [];
       })
-
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Ошибка при создании заказа';
       });
   }
 });
+
+export const addIngredientWithId = (ingredient: TIngredient) => {
+  const ingredientWithId: TConstructorIngredient = {
+    ...ingredient,
+    id: nanoid()
+  };
+
+  return burgerConstructorSlice.actions.addIngredient(ingredientWithId);
+};
 
 export const {
   addBun,

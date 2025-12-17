@@ -34,7 +34,7 @@ import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 const AppContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [backgroundLocation, setBackgroundLocation] = useState<any>(null);
+  const backgroundLocation = location.state?.background;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -45,20 +45,8 @@ const AppContent = () => {
     }
   }, [dispatch]);
 
-  useEffect(() => {
-    if (location.state?.background) {
-      setBackgroundLocation(location.state.background);
-    } else {
-      setBackgroundLocation(null);
-    }
-  }, [location]);
-
   const handleModalClose = () => {
-    if (backgroundLocation) {
-      navigate(backgroundLocation);
-    } else {
-      navigate(-1);
-    }
+    navigate(backgroundLocation ?? -1);
   };
 
   return (

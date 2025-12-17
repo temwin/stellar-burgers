@@ -4,10 +4,9 @@ import { useSelector, useDispatch } from '../../services/store';
 
 import { TTabMode, TIngredient } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { RootState } from 'src/services/store';
 import {
   addBun,
-  addIngredient
+  addIngredientWithId
 } from '../../services/slices/burgerConstructorSlice';
 import { selectIngredients } from '../../services/slices/ingredientsSlice';
 
@@ -21,7 +20,7 @@ export const BurgerIngredients: FC = () => {
       if (ingredient.type === 'bun') {
         dispatch(addBun(ingredient));
       } else {
-        dispatch(addIngredient(ingredient));
+        dispatch(addIngredientWithId(ingredient));
       }
     },
     [dispatch]
