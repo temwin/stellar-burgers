@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "name": "Био-марсианский краторный бургер",
+  "order": {
+    "ingredients": [
+      {
+        "_id": "643d69a5c3f7b9001cfa093c",
+        "name": "Краторная булка N-200i",
+        "image": "https://code.s3.yandex.net/react/code/bun-02.png"
+      },
+      {
+        "_id": "643d69a5c3f7b9001cfa0941",
+        "name": "Биокотлета из марсианской Магнолии",
+        "image": "https://code.s3.yandex.net/react/code/meat-01.png"
+      },
+      {
+        "_id": "643d69a5c3f7b9001cfa093c",
+        "name": "Краторная булка N-200i",
+        "image": "https://code.s3.yandex.net/react/code/bun-02.png"
+      }
+    ],
+    "owner": {
+      "name": "Тест",
+      "email": "test-burger@example.com"
+    },
+    "status": "done",
+    "number": 98597,
+    "price": 2934
+  }
+}
